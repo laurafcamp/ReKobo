@@ -23,7 +23,7 @@
         databaseURL: "https://rekindle-dd1fa-default-rtdb.firebaseio.com/"
     };
 
-    let isPro = false;
+    let isPro = true;
     let currentUser = null;
 
     function initFirebase() {
@@ -110,30 +110,11 @@
     }
 
     function check(callback) {
-        // 1. Quick cache check
-        try {
-            const cached = localStorage.getItem(CACHE_KEY);
-            if (cached && parseInt(cached) > Date.now()) {
-                isPro = true;
-                hidePaywall();
-                if (callback) callback(true);
-                // Still verify in background
-            }
-        } catch (e) { }
-
-        // 2. Initialize Firebase
-        if (!initFirebase()) {
-            showPaywall('Error: Firebase not loaded.');
-            if (callback) callback(false);
-            return;
-        }
-
-        // 3. Wait for auth
-        firebase.auth().onAuthStateChanged(async (user) => {
-            currentUser = user;
-            const result = await checkProStatus(user);
-            if (callback) callback(result);
-        });
+        // Liberado! Ignoramos o Firebase e o Cache.
+        isPro = true;
+        hidePaywall();
+        if (callback) callback(true);
+        return;
     }
 
     // Expose API
